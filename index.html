@@ -1,0 +1,1471 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Grammar &amp; Spell Checker – No Sign‑Up, Private | RDJ Publishers</title>
+  <meta name="description" content="Free browser-based grammar and spell checker. Instantly check writing for errors. No uploads, no sign-up – works entirely in your browser." />
+  <meta name="keywords" content="grammar checker, spell checker, free grammar check, online spell check, RDJ Publishers, browser grammar tool" />
+  <meta name="author" content="RDJ Publishers" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://rdjpublishers.github.io/Grammar-Checker/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rdjpublishers.github.io/Grammar-Checker/" />
+  <meta property="og:title" content="Free Grammar &amp; Spell Checker – No Sign‑Up, Private | RDJ Publishers" />
+  <meta property="og:description" content="Check grammar and spelling instantly in your browser. Private, free, no sign-up." />
+  <meta property="og:image" content="https://rdjpublishers.github.io/Grammar-Checker/Grammar.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Grammar & Spell Checker","url":"https://rdjpublishers.github.io/Grammar-Checker/","description":"Free browser-based grammar and spell checker.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"RDJ Publishers","url":"https://rdjpublishers.github.io/","email":"rdjpublishers@gmail.com"}}</script>
+  <link rel="icon" type="image/png" href="Logo.png" />
+  <link rel="apple-touch-icon" href="Logo.png" />
+  <!--
+    OPEN SOURCE NOTICES
+    LanguageTool (https://languagetool.org) - Copyright 2003-2024 Tiago Boldt & contributors - LGPL 2.1
+    Free public API — no key required. Rate limited to fair use.
+  -->
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8728382905346597" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <!--
+    compromise (https://github.com/spencermountain/compromise)
+    MIT License – free for commercial use
+    Client-side NLP: SVA · Missing Articles · Tense Inconsistency · Wrong Irregular Verbs
+  -->
+  <!-- compromise is NOT on cdnjs — jsDelivr is primary, unpkg is fallback -->
+  <script src="https://cdn.jsdelivr.net/npm/compromise@14.14.2/builds/compromise.min.js"
+    onerror="
+      console.warn('[compromise] jsDelivr failed, trying unpkg…');
+      var s=document.createElement('script');
+      s.src='https://unpkg.com/compromise@14.14.2/builds/compromise.min.js';
+      s.onerror=function(){window._compromiseFailed=true;console.warn('[compromise] Both CDNs failed.');};
+      document.head.appendChild(s);
+    "></script>
+
+<style>
+/* ===== RESET & TOKENS ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sidebar-w:240px;
+  --sidebar-bg:#080d1a;
+  --sidebar-border:rgba(255,255,255,0.06);
+  --accent:#6366f1;
+  --accent-2:#8b5cf6;
+  --accent-glow:rgba(99,102,241,0.22);
+  --accent-dark:#4f46e5;
+  --accent-light:#eef2ff;
+  --bg:#f5f6fb;
+  --surface:#ffffff;
+  --surface2:#f0f2f9;
+  --surface3:#e6eaf5;
+  --text:#0d1426;
+  --text-muted:#5a6480;
+  --text-faint:#9ca3af;
+  --border:#e0e4f0;
+  --border-strong:#c5cce0;
+  --danger:#ef4444;
+  --danger-bg:rgba(239,68,68,0.07);
+  --warning:#f59e0b;
+  --warning-bg:rgba(245,158,11,0.07);
+  --success:#22c55e;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 3px rgba(0,0,0,0.05),0 4px 20px rgba(0,0,0,0.06);
+  --shadow-md:0 8px 32px rgba(0,0,0,0.10);
+  --shadow-glow:0 0 0 3px var(--accent-glow);
+  --font-head:'Sora',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --transition:0.22s cubic-bezier(0.4,0,0.2,1);
+  /* textarea mirror metrics – MUST match textarea exactly */
+  --ta-sz:0.96rem;
+  --ta-lh:1.72;
+  --ta-pv:0.9rem;
+  --ta-ph:1rem;
+  --ta-fw:400;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* ===== SIDEBAR ===== */
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);display:flex;flex-direction:column;z-index:100;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1)}
+.sidebar-logo{padding:1.5rem 1.25rem 1.25rem;border-bottom:1px solid var(--sidebar-border);display:flex;align-items:center;justify-content:space-between;gap:0.5rem}
+.logo-wrap{display:flex;align-items:center;gap:0.65rem;text-decoration:none;margin-left:6px}
+.sidebar-logo img{width:34px;height:34px;border-radius:8px;object-fit:contain;background:rgba(255,255,255,0.06)}
+.logo-text{display:flex;flex-direction:column}
+.logo-name{font-family:var(--font-head);font-weight:700;font-size:0.9rem;color:#fff;line-height:1.2;letter-spacing:-0.01em}
+.logo-tagline{font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:0.04em;text-transform:uppercase}
+.sidebar-close-btn{background:transparent;border:none;color:rgba(255,255,255,0.65);cursor:pointer;font-size:1.5rem;line-height:1;padding:0.25rem 0.4rem;border-radius:8px;transition:all var(--transition);display:flex;align-items:center;justify-content:center}
+.sidebar-close-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
+@media(min-width:769px){.sidebar-close-btn{display:none}}
+.sidebar-nav{padding:1rem 0.75rem;flex:1;display:flex;flex-direction:column;gap:0.2rem;overflow-y:auto}
+.nav-label{font-size:0.63rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.2);padding:0.5rem 0.6rem 0.35rem;font-family:var(--font-head);font-weight:600}
+.nav-btn{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.8rem;border-radius:10px;border:none;background:transparent;color:rgba(255,255,255,0.45);font:500 0.875rem var(--font-body);cursor:pointer;transition:all var(--transition);text-align:left;width:100%;letter-spacing:0.01em}
+.nav-btn:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.9)}
+.nav-btn.active{background:rgba(99,102,241,0.18);color:#a5b4fc;font-weight:600;border:1px solid rgba(99,102,241,0.25)}
+.nav-btn.active .nav-icon{opacity:1}
+.nav-icon{width:17px;height:17px;opacity:0.5;flex-shrink:0}
+.sidebar-footer{padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--sidebar-border)}
+.sidebar-footer p{font-size:0.72rem;color:rgba(255,255,255,0.2);line-height:1.6;margin-bottom:0.6rem}
+.sidebar-footer a{color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.15s}
+.sidebar-footer a:hover{color:#a5b4fc}
+details.lic summary{font-size:0.7rem;color:rgba(255,255,255,0.22);cursor:pointer;list-style:none;display:flex;align-items:center;gap:0.35rem;transition:color var(--transition)}
+details.lic summary:hover{color:rgba(255,255,255,0.5)}
+details.lic summary::before{content:'▸';font-size:0.65rem;transition:transform 0.2s}
+details.lic[open] summary::before{transform:rotate(90deg)}
+.lic-text{margin-top:0.75rem;font-size:0.65rem;color:rgba(255,255,255,0.18);line-height:1.7;max-height:200px;overflow-y:auto;scrollbar-width:thin}
+.lic-text h4{font-size:0.68rem;color:rgba(255,255,255,0.38);margin:0.7rem 0 0.3rem;font-family:var(--font-head)}
+.lic-text h4:first-child{margin-top:0}
+
+/* ===== HAMBURGER ===== */
+.hamburger{display:none;position:fixed;top:0.85rem;left:0.85rem;z-index:200;background:var(--sidebar-bg);border:1px solid rgba(255,255,255,0.12);border-radius:9px;padding:0.5rem;cursor:pointer;color:#fff;transition:background var(--transition);align-items:center;justify-content:center}
+.hamburger:hover{background:rgba(99,102,241,0.3)}
+.hamburger svg{display:block}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:90;backdrop-filter:blur(4px)}
+
+/* ===== MAIN ===== */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.page{display:none;flex-direction:column;flex:1;min-height:100vh;animation:fadeInPage 0.28s ease forwards}
+.page.active{display:flex}
+@keyframes fadeInPage{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== TOP BAR ===== */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.6rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 0 var(--border);backdrop-filter:blur(8px);min-height:68px}
+.topbar-left{display:flex;align-items:center;gap:1rem;margin-left:1rem}
+.topbar-logo-img{height:54px;width:auto;display:block;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(99,102,241,0.18))}
+.topbar-title-group{display:flex;flex-direction:column;gap:2px}
+.topbar-title{font-family:var(--font-head);font-weight:700;font-size:1.18rem;color:var(--text);letter-spacing:-0.025em;line-height:1.2}
+.topbar-sub{font-size:0.72rem;color:var(--text-muted);font-weight:400}
+.topbar-badge{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46;font-size:0.7rem;font-weight:700;padding:0.22rem 0.75rem;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;box-shadow:0 1px 4px rgba(0,0,0,0.08);white-space:nowrap}
+
+/* ===== TOOL WRAP ===== */
+.tool-wrap{padding:1.5rem 1.75rem 2.5rem;flex:1}
+.page-header{margin-bottom:1.2rem}
+.page-header h1{font-family:var(--font-head);font-weight:700;font-size:1.6rem;letter-spacing:-0.035em;line-height:1.2;background:linear-gradient(135deg,var(--text) 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-header p{color:var(--text-muted);font-size:0.9rem;margin-top:0.35rem}
+.privacy-notice{display:flex;align-items:center;gap:0.6rem;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:0.6rem 1rem;margin-bottom:1.2rem;font-size:0.82rem;color:#166534;font-weight:500}
+
+/* ===== TWO BOXES ===== */
+.boxes-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;align-items:start}
+
+/* ===== PANEL ===== */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);transition:box-shadow var(--transition)}
+.panel:hover{box-shadow:var(--shadow-md)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:0.75rem;flex-wrap:wrap}
+.ph2{font-family:var(--font-head);font-size:0.92rem;font-weight:700;letter-spacing:-0.02em;color:var(--text);display:flex;align-items:center;gap:0.5rem;margin:0}
+.picon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent-light),#e0e7ff);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+
+/* ===== COUNTER ===== */
+.counter-row{display:flex;align-items:center;gap:0.5rem;font-size:0.77rem;color:var(--text-faint);margin-bottom:0.6rem;flex-wrap:wrap}
+.csep{color:var(--border-strong)}
+.lib-badge{margin-left:auto;display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:500;padding:0.14rem 0.6rem;border-radius:999px;white-space:nowrap}
+.lb-loading{background:var(--surface2);color:var(--text-faint)}
+.lb-ready{background:#dcfce7;color:#166534}
+.lb-partial{background:#fef3c7;color:#92400e}
+.lb-error{background:#fee2e2;color:#991b1b}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid rgba(99,102,241,0.25);border-top-color:var(--accent);border-radius:50%;animation:spin 0.75s linear infinite;flex-shrink:0;vertical-align:middle}
+
+/* ===== TEXTAREA OVERLAY ===== */
+/*
+  The "mirror underline" technique:
+  A backdrop div sits BEHIND the textarea with identical metrics.
+  Its text is color:transparent so only the <mark> underlines show.
+  The textarea has background:transparent so the underlines bleed through.
+*/
+.ta-wrapper{position:relative;display:block;margin-bottom:0.85rem}
+
+.ta-backdrop{
+  /* Identical box metrics to textarea – critical for alignment */
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  pointer-events:none;
+  overflow:hidden;
+  border-radius:var(--radius-sm);
+  /* 1.5px transparent border so padding-box matches textarea's border-box */
+  border:1.5px solid transparent;
+  padding:var(--ta-pv) var(--ta-ph);
+  font-size:var(--ta-sz);
+  line-height:var(--ta-lh);
+  font-weight:var(--ta-fw);
+  font-family:var(--font-body);
+  letter-spacing:normal;
+  word-spacing:normal;
+  white-space:pre-wrap;
+  word-wrap:break-word;
+  word-break:break-word;
+  tab-size:4;
+  color:transparent; /* hide text, show only marks */
+  background:transparent;
+}
+.ta-backdrop mark{
+  color:transparent;
+  background:transparent;
+  border-radius:2px;
+  padding:0 1px;
+}
+.ta-backdrop mark.mg{border-bottom:2.5px solid #ef4444;background:rgba(239,68,68,0.1)}
+.ta-backdrop mark.ms{border-bottom:2.5px dashed #f59e0b;background:rgba(245,158,11,0.09)}
+
+#textInput{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  min-height:230px;
+  padding:var(--ta-pv) var(--ta-ph);
+  border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);
+  font-size:var(--ta-sz);
+  line-height:var(--ta-lh);
+  font-weight:var(--ta-fw);
+  font-family:var(--font-body);
+  letter-spacing:normal;
+  word-spacing:normal;
+  color:var(--text);
+  background:transparent; /* lets underlines show through */
+  resize:vertical;
+  outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition);
+  white-space:pre-wrap;
+  word-break:break-word;
+  tab-size:4;
+  caret-color:var(--text);
+}
+#textInput::placeholder{color:var(--text-faint);font-weight:400}
+#textInput:focus{border-color:var(--accent);box-shadow:var(--shadow-glow)}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.58rem 1.15rem;border-radius:var(--radius-sm);border:1.5px solid transparent;font:600 0.85rem var(--font-body);cursor:pointer;transition:all var(--transition);white-space:nowrap;letter-spacing:0.01em}
+.btn:disabled{opacity:0.48;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 2px 12px rgba(99,102,241,0.35)}
+.btn-primary:hover:not(:disabled){background:linear-gradient(135deg,var(--accent-dark),var(--accent));box-shadow:0 4px 20px rgba(99,102,241,0.5);transform:translateY(-1px)}
+.btn-success{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 2px 10px rgba(34,197,94,0.3)}
+.btn-success:hover:not(:disabled){background:linear-gradient(135deg,#15803d,#16a34a);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface2);color:var(--text-muted);border-color:var(--border)}
+.btn-ghost:hover:not(:disabled){background:var(--surface3);color:var(--text);border-color:var(--border-strong)}
+.btn-copy{background:var(--accent-light);color:var(--accent-dark);border:1px solid rgba(99,102,241,0.25)}
+.btn-copy:hover:not(:disabled){background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-row{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap}
+
+/* ===== STATUS ===== */
+.status-msg{font-size:0.82rem;font-weight:500;padding:0.38rem 0.75rem;border-radius:8px;margin-top:0.65rem;transition:all var(--transition)}
+.status-msg:empty{display:none}
+.sinfo{background:var(--accent-light);color:var(--accent-dark)}
+.ssuccess{background:#dcfce7;color:#166534}
+.swarn{background:#fef3c7;color:#92400e}
+.serror{background:#fee2e2;color:#991b1b}
+
+/* ===== OUTPUT BOX ===== */
+.output-panel{display:flex;flex-direction:column}
+.output-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.65rem;padding:2.75rem 1rem;color:var(--text-faint);text-align:center;font-size:0.875rem;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:var(--surface2);margin-bottom:0.85rem}
+.output-empty-state svg{opacity:0.3}
+.output-empty-state p{max-width:210px;line-height:1.55}
+#outputBox{display:none;width:100%;min-height:230px;padding:var(--ta-pv) var(--ta-ph);border-radius:var(--radius-sm);border:1.5px solid #bbf7d0;font-size:var(--ta-sz);line-height:var(--ta-lh);font-family:var(--font-body);font-weight:var(--ta-fw);color:var(--text);background:linear-gradient(135deg,#f8fff8,#f0fdf4);resize:vertical;outline:none;cursor:default;margin-bottom:0.85rem}
+#outputBox.show{display:block}
+
+/* ===== ERRORS SECTION ===== */
+.errors-section{margin-top:0}
+.ec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.65rem;margin-top:0.85rem}
+.empty-err{display:flex;align-items:center;gap:0.75rem;padding:1.4rem;color:var(--text-faint);font-size:0.875rem}
+.empty-err svg{opacity:0.3;flex-shrink:0}
+.ecard{border-radius:var(--radius-sm);border:1px solid var(--border);padding:0.8rem 1rem;transition:all var(--transition);animation:cardIn 0.18s ease forwards}
+@keyframes cardIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.ecard:hover{box-shadow:var(--shadow)}
+.ecard.eg{border-left:3px solid var(--danger);background:var(--danger-bg)}
+.ecard.es{border-left:3px solid var(--warning);background:var(--warning-bg)}
+.ecard.fixed{opacity:0.42}
+.ec-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;gap:0.5rem}
+.ebadge{font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:0.12rem 0.55rem;border-radius:999px}
+.ebadge.g{background:rgba(239,68,68,0.14);color:#b91c1c}
+.ebadge.s{background:rgba(245,158,11,0.14);color:#92400e}
+.ebadge.ok{background:#dcfce7;color:#166534}
+.ec-words{display:flex;align-items:center;gap:0.45rem;font-size:0.87rem;margin-bottom:0.28rem;flex-wrap:wrap}
+.worig{color:var(--danger);font-weight:600;text-decoration:line-through}
+.warr{color:var(--text-faint);font-size:0.8rem}
+.wsugg{color:#166534;font-weight:600}
+.ec-msg{font-size:0.77rem;color:var(--text-muted);line-height:1.45}
+.ec-cat{font-size:0.68rem;font-weight:600;color:var(--text-faint);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:0.3rem}
+.btn-fix-ec{background:linear-gradient(135deg,var(--accent-light),#e0e7ff);color:var(--accent-dark);border:1px solid rgba(99,102,241,0.22);padding:0.26rem 0.72rem;border-radius:6px;font:600 0.74rem var(--font-body);cursor:pointer;transition:all var(--transition);white-space:nowrap}
+.btn-fix-ec:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.err-badge{background:var(--danger);color:#fff;font-size:0.7rem;font-weight:700;padding:0.13rem 0.5rem;border-radius:999px;min-width:20px;text-align:center}
+.err-badge:empty{display:none}
+.legend{display:flex;gap:1rem;font-size:0.75rem;color:var(--text-muted)}
+.leg-item{display:flex;align-items:center;gap:0.35rem}
+.leg-sw{display:inline-block;width:20px;height:0}
+.leg-sw.g{border-bottom:2.5px solid var(--danger)}
+.leg-sw.s{border-bottom:2.5px dashed var(--warning)}
+
+/* ===== ABOUT PAGE ===== */
+.about-wrap{padding:2rem 1.75rem;flex:1}
+.about-hero{text-align:center;padding:2.75rem 1.5rem 2.25rem;margin-bottom:2rem;background:linear-gradient(135deg,#f8f7ff,#eef2ff 50%,#f5f6fb);border-radius:var(--radius);border:1px solid var(--border);position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(99,102,241,0.07),transparent 60%);pointer-events:none}
+.about-hero h1{font-family:var(--font-head);font-weight:700;font-size:2rem;letter-spacing:-0.04em;margin-bottom:0.9rem;background:linear-gradient(135deg,var(--text) 30%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.about-hero p{font-size:0.97rem;color:var(--text-muted);max-width:560px;margin:0 auto;line-height:1.7}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);transition:all var(--transition);position:relative;overflow:hidden}
+.info-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));opacity:0;transition:opacity var(--transition)}
+.info-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.info-card:hover::after{opacity:1}
+.card-icon{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent-light),#e0e7ff);display:flex;align-items:center;justify-content:center;margin-bottom:0.85rem;font-size:1.2rem}
+.info-card h3{font-family:var(--font-head);font-weight:700;font-size:0.97rem;letter-spacing:-0.02em;margin-bottom:0.45rem;color:var(--text)}
+.info-card p{font-size:0.875rem;color:var(--text-muted);line-height:1.65}
+.priv-hl{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:var(--radius);padding:1.75rem 2rem;display:flex;align-items:flex-start;gap:1.25rem;box-shadow:0 8px 32px rgba(99,102,241,0.2)}
+.ph-icon{width:50px;height:50px;border-radius:13px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem}
+.priv-hl h3{font-family:var(--font-head);font-weight:700;font-size:1rem;color:#fff;margin-bottom:0.45rem}
+.priv-hl p{font-size:0.875rem;color:rgba(255,255,255,0.75);line-height:1.65}
+
+/* ===== CONTACT PAGE ===== */
+.contact-wrap{padding:2rem 1.75rem;flex:1}
+.ch{margin-bottom:1.75rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.ch h1{font-family:var(--font-head);font-weight:700;font-size:1.8rem;letter-spacing:-0.04em;margin-bottom:0.45rem;background:linear-gradient(135deg,var(--text) 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ch p{font-size:0.93rem;color:var(--text-muted)}
+.cl{display:grid;grid-template-columns:1fr 1.55fr;gap:1.5rem;align-items:start}
+.ci-panel{display:flex;flex-direction:column;gap:0.8rem}
+.ci-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.15rem 1.3rem;box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:0.9rem;transition:box-shadow var(--transition)}
+.ci-card:hover{box-shadow:var(--shadow-md)}
+.ci-ico{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent-light),#e0e7ff);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+.ci-info .lbl{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-faint);margin-bottom:0.2rem}
+.ci-info .val{font-size:0.875rem;font-weight:500;color:var(--text);word-break:break-all}
+.ci-info .val a{color:var(--accent);text-decoration:none}
+.ci-info .val a:hover{text-decoration:underline}
+.field{margin-bottom:1rem}
+.flbl{display:block;margin-bottom:0.3rem;font-size:0.76rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em}
+.finput{width:100%;padding:0.62rem 0.9rem;border-radius:var(--radius-sm);border:1.5px solid var(--border);font:inherit;font-size:0.9rem;background:var(--surface);color:var(--text);transition:border-color var(--transition),box-shadow var(--transition);outline:none;appearance:none}
+.finput:focus{border-color:var(--accent);box-shadow:var(--shadow-glow)}
+textarea.finput{resize:vertical;min-height:120px;font-family:var(--font-body)}
+.frow{display:flex;gap:0.7rem}
+.frow .field{flex:1}
+.ferr{color:var(--danger);font-size:0.82rem;margin-top:0.65rem;min-height:1rem}
+.fsuccess{display:none;text-align:center;padding:2.25rem 1rem;flex-direction:column;align-items:center;gap:0.7rem;color:#166534}
+.fsuccess.show{display:flex}
+.fsuccess h3{font-family:var(--font-head);font-size:1.05rem;font-weight:700}
+.fsuccess p{font-size:0.875rem;color:var(--text-muted)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .main{margin-left:0}
+  .topbar{padding:0.6rem 1rem 0.6rem 3.5rem;min-height:58px}
+  .topbar-left{margin-left:0}
+  .topbar-logo-img{height:40px}
+  .topbar-title{font-size:0.95rem}
+  .topbar-sub{display:none}
+  .tool-wrap,.about-wrap,.contact-wrap{padding:1rem}
+  .boxes-grid,.cards-grid,.cl{grid-template-columns:1fr}
+  .ec-grid{grid-template-columns:1fr}
+  .about-hero h1{font-size:1.55rem}
+  .priv-hl{flex-direction:column;gap:1rem}
+  .frow{flex-direction:column}
+}
+@media(max-width:480px){
+  .btn-row .btn{flex:1 1 auto;justify-content:center}
+  .panel-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a href="#" class="logo-wrap" onclick="showPage('tool');return false;">
+      <img src="Logo.png" alt="RDJ Publishers" onerror="this.style.display='none'" />
+      <div class="logo-text">
+        <span class="logo-name">RDJ Publishers</span>
+        <span class="logo-tagline">Free Tools</span>
+      </div>
+    </a>
+    <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+  </div>
+
+  <nav class="sidebar-nav" role="navigation" aria-label="Main">
+    <div class="nav-label">Tools</div>
+    <button class="nav-btn active" id="nav-tool" onclick="showPage('tool')" aria-current="page">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      Grammar Checker
+    </button>
+    <div class="nav-label" style="margin-top:.5rem">Info</div>
+    <button class="nav-btn" id="nav-about" onclick="showPage('about')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About
+    </button>
+    <button class="nav-btn" id="nav-contact" onclick="showPage('contact')">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <p>© 2024 <a href="https://rdjpublishers.github.io/" target="_blank" rel="noopener">RDJ Publishers</a><br>All tools are free to use.</p>
+    <details class="lic" style="margin-top:.5rem">
+      <summary>Open Source Licenses</summary>
+      <div class="lic-text">
+        <h4>LanguageTool – LGPL 2.1</h4>
+        <p>Copyright © 2003–2024 Tiago Boldt & contributors. Free public API, no key required. <a href="https://languagetool.org" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.4)">languagetool.org</a></p>
+        <h4>compromise.js – MIT</h4>
+        <p>Copyright © Spencer Kelly & contributors. Client-side NLP for SVA, article &amp; tense checks. Free for commercial use. <a href="https://github.com/spencermountain/compromise" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.4)">github.com/spencermountain/compromise</a></p>
+      </div>
+    </details>
+  </div>
+</aside>
+
+<button class="hamburger" id="hamburger" aria-label="Open menu">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="overlay" id="overlay"></div>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+  <!-- ========== GRAMMAR CHECKER PAGE ========== -->
+  <section class="page active" id="page-tool">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <img src="Grammar.png" class="topbar-logo-img" alt="Grammar Checker Logo" onerror="this.style.display='none'" />
+        <div class="topbar-title-group">
+          <span class="topbar-title">Grammar &amp; Spell Checker</span>
+          <span class="topbar-sub">LanguageTool + compromise.js · 30+ Grammar Categories · Free</span>
+        </div>
+      </div>
+      <span class="topbar-badge">FREE</span>
+    </div>
+
+    <div class="tool-wrap">
+      <div class="privacy-notice">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Your text is sent to the LanguageTool public API for analysis. No data is stored or logged after checking.
+      </div>
+
+      <!-- TWO BOXES -->
+      <div class="boxes-grid">
+
+        <!-- BOX 1: INPUT -->
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="ph2">
+              <span class="picon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
+              Your Text
+            </h2>
+            <div id="libBadge" class="lib-badge lb-loading"><span class="spin"></span>&nbsp;Loading…</div>
+          </div>
+
+          <div class="counter-row">
+            <span id="wordCount">0 words</span>
+            <span class="csep">·</span>
+            <span id="charCount">0 chars</span>
+            <span class="csep">·</span>
+            <span class="legend">
+              <span class="leg-item"><span class="leg-sw g"></span>Grammar</span>
+              <span class="leg-item"><span class="leg-sw s"></span>Spelling</span>
+            </span>
+          </div>
+
+          <!-- Overlay textarea wrapper -->
+          <div class="ta-wrapper">
+            <div id="taBackdrop" class="ta-backdrop"></div>
+            <textarea
+              id="textInput"
+              rows="12"
+              spellcheck="false"
+              autocorrect="off"
+              autocapitalize="off"
+              placeholder="Paste or type your text here…&#10;&#10;Try these examples:&#10;• I goed to the store yesterday.&#10;• She dont know the answer.&#10;• The cat sat on there mat.&#10;• He could of done better."
+            ></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button id="checkBtn" class="btn btn-primary" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Check Grammar &amp; Spelling
+            </button>
+            <button id="clearBtn" class="btn btn-ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+              Clear
+            </button>
+          </div>
+          <div id="statusMsg" class="status-msg"></div>
+        </div>
+
+        <!-- BOX 2: OUTPUT (corrected text) -->
+        <div class="panel output-panel">
+          <div class="panel-head">
+            <h2 class="ph2">
+              <span class="picon" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);color:#166534">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              Corrected Text
+            </h2>
+            <button id="copyBtn" class="btn btn-copy" style="padding:0.38rem 0.85rem;font-size:0.78rem" disabled>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+
+          <div id="outputEmpty" class="output-empty-state">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="20 6 9 17 4 12"/><circle cx="12" cy="12" r="10" stroke-dasharray="3 3"/></svg>
+            <p>Click <strong>Fix</strong> on any issue below, or <strong>Fix All</strong> to see your corrected text here.</p>
+          </div>
+          <textarea id="outputBox" readonly></textarea>
+
+          <div class="btn-row">
+            <button id="fixAllBtn" class="btn btn-success" disabled>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Fix All Issues
+            </button>
+          </div>
+
+          <p style="font-size:0.7rem;color:var(--text-faint);margin-top:0.9rem;line-height:1.55;border-top:1px solid var(--border);padding-top:0.8rem">
+            Powered by <a href="https://languagetool.org" target="_blank" rel="noopener" style="color:var(--text-faint);text-decoration:underline">LanguageTool</a> (LGPL 2.1) &amp; <a href="https://github.com/spencermountain/compromise" target="_blank" rel="noopener" style="color:var(--text-faint);text-decoration:underline">compromise.js</a> (MIT) — 30+ grammar &amp; style categories
+          </p>
+        </div>
+
+      </div><!-- /boxes-grid -->
+
+      <!-- ERRORS PANEL -->
+      <div class="panel errors-section" id="errPanel">
+        <div class="panel-head">
+          <h2 class="ph2">
+            <span class="picon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+            Issues Found
+            <span id="errBadge" class="err-badge"></span>
+          </h2>
+        </div>
+        <div id="errList">
+          <div class="empty-err">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span>Click <strong>Check Grammar &amp; Spelling</strong> above to analyse your text.</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tool-wrap -->
+  </section>
+
+  <!-- ========== ABOUT PAGE ========== -->
+  <section class="page" id="page-about">
+    <div class="topbar">
+      <div class="topbar-left">
+        <img src="Logo.png" class="topbar-logo-img" alt="RDJ Publishers" onerror="this.style.display='none'" />
+        <div class="topbar-title-group">
+          <span class="topbar-title">About RDJ Publishers</span>
+          <span class="topbar-sub">Our story, mission &amp; values</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-wrap">
+      <div class="about-hero">
+        <h1>Crafting Tools People Actually Use</h1>
+        <p>RDJ Publishers is an independent web studio dedicated to building free, fast, and privacy-respecting tools for students, professionals, and everyday users – with zero sign-ups and zero costs.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="info-card"><div class="card-icon">🏗️</div><h3>Who We Are</h3><p>Independent web publishing studio building practical, free-to-use web apps for everyone.</p></div>
+        <div class="info-card"><div class="card-icon">🎯</div><h3>Our Mission</h3><p>Democratise access to productivity tools with browser-based utilities that work on any device, any data plan.</p></div>
+        <div class="info-card"><div class="card-icon">🆓</div><h3>Always Free</h3><p>No hidden paywalls, no freemium limits, no forced sign-ups. Supported by non-intrusive advertising.</p></div>
+        <div class="info-card"><div class="card-icon">🔄</div><h3>Always Evolving</h3><p>Regularly add new tools. We read every feature request and bug report.</p></div>
+      </div>
+      <div class="priv-hl">
+        <div class="ph-icon">🔒</div>
+        <div>
+          <h3>Your Privacy, Guaranteed</h3>
+          <p>All tools process your data entirely inside your browser. Nothing is ever sent to any server, stored, or seen by anyone else.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT PAGE ========== -->
+  <section class="page" id="page-contact">
+    <div class="topbar">
+      <div class="topbar-left">
+        <img src="Logo.png" class="topbar-logo-img" alt="RDJ Publishers" onerror="this.style.display='none'" />
+        <div class="topbar-title-group">
+          <span class="topbar-title">Contact Us</span>
+          <span class="topbar-sub">We read every message</span>
+        </div>
+      </div>
+    </div>
+    <div class="contact-wrap">
+      <div class="ch">
+        <h1>We'd Love to Hear From You</h1>
+        <p>Questions, bug reports, tool requests, or just say hello – we read every message.</p>
+      </div>
+      <div class="cl">
+        <div class="ci-panel">
+          <div class="ci-card"><div class="ci-ico">✉️</div><div class="ci-info"><div class="lbl">Email</div><div class="val"><a href="mailto:rdjpublishers@gmail.com">rdjpublishers@gmail.com</a></div></div></div>
+          <div class="ci-card"><div class="ci-ico">🌐</div><div class="ci-info"><div class="lbl">Website</div><div class="val"><a href="https://rdjpublishers.github.io/" target="_blank" rel="noopener">rdjpublishers.github.io</a></div></div></div>
+          <div class="ci-card"><div class="ci-ico">⏱️</div><div class="ci-info"><div class="lbl">Response Time</div><div class="val">Usually within 24–48 hours</div></div></div>
+          <div class="panel" style="background:linear-gradient(135deg,#f8f7ff,#eef2ff);border-color:rgba(99,102,241,0.2)">
+            <p style="font-size:0.83rem;color:var(--text-muted);line-height:1.65"><strong style="color:var(--text)">Got a tool idea?</strong><br>We love hearing from users. Drop us a message with your request — we'll consider it for our next build.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <h2 class="ph2" style="margin-bottom:1.3rem">
+            <span class="picon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+            Send a Message
+          </h2>
+          <form id="cForm">
+            <input type="hidden" name="access_key" value="b8e73ebb-4cd4-45ae-aa44-5a9725856c03" />
+            <input type="hidden" name="from_name" value="RDJ Publishers Grammar Checker" />
+            <div class="frow">
+              <div class="field"><label class="flbl" for="cf-name">Your Name *</label><input type="text" id="cf-name" name="name" class="finput" placeholder="John Doe" required /></div>
+              <div class="field"><label class="flbl" for="cf-email">Email *</label><input type="email" id="cf-email" name="email" class="finput" placeholder="you@example.com" required /></div>
+            </div>
+            <div class="field"><label class="flbl" for="cf-sub">Subject</label><input type="text" id="cf-sub" name="subject" class="finput" placeholder="Bug report, feature request…" /></div>
+            <div class="field"><label class="flbl" for="cf-msg">Message *</label><textarea id="cf-msg" name="message" class="finput" rows="5" placeholder="Your message…" required></textarea></div>
+            <div id="cf-err" class="ferr"></div>
+            <button type="submit" id="cf-submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:.2rem">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send Message
+            </button>
+          </form>
+          <div id="cf-ok" class="fsuccess">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <h3>Thank you!</h3><p>We'll get back to you soon.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* =====================================================================
+   NAVIGATION
+   ===================================================================== */
+const sidebar   = document.getElementById('sidebar');
+const overlayEl = document.getElementById('overlay');
+const hamburger = document.getElementById('hamburger');
+const closeBtn  = document.getElementById('sidebarCloseBtn');
+
+function openSidebar()  { sidebar.classList.add('open'); overlayEl.style.display='block'; hamburger.style.display='none'; }
+function closeSidebar() { sidebar.classList.remove('open'); overlayEl.style.display='none'; if(window.innerWidth<=768) hamburger.style.display='flex'; }
+
+hamburger.addEventListener('click', openSidebar);
+closeBtn.addEventListener('click', closeSidebar);
+overlayEl.addEventListener('click', closeSidebar);
+window.addEventListener('resize', () => {
+  if(window.innerWidth>768){sidebar.classList.remove('open');overlayEl.style.display='none';hamburger.style.display='none';}
+  else { hamburger.style.display='flex'; }
+});
+if(window.innerWidth<=768) hamburger.style.display='flex';
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('active');b.removeAttribute('aria-current');});
+  document.getElementById('page-'+name).classList.add('active');
+  const nb=document.getElementById('nav-'+name);
+  if(nb){nb.classList.add('active');nb.setAttribute('aria-current','page');}
+  closeSidebar(); window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   UTILITY
+   ===================================================================== */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function matchCase(orig, sug){
+  if(!sug||!orig) return sug;
+  if(orig[0]===orig[0].toUpperCase() && orig[0]!==orig[0].toLowerCase())
+    return sug[0].toUpperCase()+sug.slice(1);
+  if(orig===orig.toUpperCase()&&orig.length>1) return sug.toUpperCase();
+  return sug;
+}
+
+/* =====================================================================
+   LANGUAGETOOL — free public API, no key required
+   https://languagetool.org/http-api/  (LGPL 2.1)
+   ===================================================================== */
+const LT_API = 'https://api.languagetool.org/v2/check';
+
+async function runLanguageTool(text, language='en-US'){
+  const body = new URLSearchParams({
+    text, language,
+    enabledOnly: 'false',
+    level: 'picky',
+    enabledRules: [
+      'EN_A_VS_AN','MISSING_DETERMINER','ARTICLE_MISSING',
+      'AGREEMENT_VERB_NOUN','SUBJECT_VERB_AGREEMENT',
+      'VERB_TENSE_SHIFT','TENSE_INCONSISTENCY',
+      'WRONG_PAST_TENSE_AFTER_DID','EN_SPECIFIC_CASE',
+      'MISSING_ARTICLE_BEFORE_SINGULAR_NOUN',
+      'MISSING_ARTICLE','EN_UNPAIRED_BRACKETS'
+    ].join(',')
+  });
+  const res = await fetch(LT_API, {
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
+    body
+  });
+  if(!res.ok) throw new Error('LanguageTool HTTP '+res.status);
+  const data = await res.json();
+  return data.matches || [];
+}
+
+function ltType(match){
+  const t=(match.rule?.issueType||'').toLowerCase();
+  return (t==='misspelling'||t==='non-conformance') ? 'spelling' : 'grammar';
+}
+function ltCategory(match){
+  return match.rule?.category?.name || match.rule?.issueType || 'Grammar';
+}
+
+/* =====================================================================
+   COMPROMISE.JS — MIT licence, free for commercial use
+   Client-side NLP supplementary checks:
+     1. Wrong irregular verb forms
+     2. Subject-Verb Agreement
+     3. Missing articles
+     4. Verb tense inconsistency
+   ===================================================================== */
+
+/* ---- 1. Wrong irregular past-tense forms ---- */
+const WRONG_IRREGULARS = {
+  goed:'went', runned:'ran', thinked:'thought', catched:'caught',
+  teached:'taught', buyed:'bought', bringed:'brought', feeled:'felt',
+  keeped:'kept', maked:'made', comed:'came', knowed:'knew',
+  gived:'gave', taked:'took', selled:'sold', sended:'sent',
+  singed:'sang', sleeped:'slept', speaked:'spoke', spended:'spent',
+  swimmed:'swam', waked:'woke', writed:'wrote', drawed:'drew',
+  ated:'ate', finded:'found', getted:'got', sawed:'saw',
+  becomed:'became', bited:'bit', blowed:'blew', breaked:'broke',
+  builded:'built', choosed:'chose', dealed:'dealt', digged:'dug',
+  drived:'drove', falled:'fell', fighted:'fought', flied:'flew',
+  growed:'grew', hided:'hid', holded:'held', hurted:'hurt',
+  leaded:'led', lended:'lent', losted:'lost', meaned:'meant',
+  rided:'rode', ringed:'rang', rised:'rose', shaked:'shook',
+  shooted:'shot', sitted:'sat', strucked:'struck', sweared:'swore',
+  swinged:'swung', throwed:'threw', understanded:'understood',
+  weared:'wore', withdrawed:'withdrew', telled:'told', standed:'stood',
+  bended:'bent', bursted:'burst', creeped:'crept', drinked:'drank',
+  frozed:'froze', forgetted:'forgot', forgotted:'forgot',
+  payed:'paid', sayed:'said', stucked:'stuck', winded:'wound',
+  wored:'wore', lighted:'lit', tored:'tore', felled:'fell',
+  beated:'beat', casted:'cast', costted:'cost', cuted:'cut',
+  hited:'hit', putted:'put', quited:'quit', readed:'read',
+  resetted:'reset', setted:'set', shutted:'shut', spreaded:'spread'
+};
+
+/* ---- 2. Determiners (prevent article false-positives) ---- */
+const DETS = new Set([
+  'a','an','the','my','your','his','her','its','our','their',
+  'this','that','these','those','each','every','any','no','some',
+  'many','much','few','little','all','both','half','either','neither',
+  'another','other','one','two','three','four','five','six','seven',
+  'eight','nine','ten','several','enough','which','what','whose',
+  'first','second','third','last','next','same','other'
+]);
+
+/* ---- 3. Uncountable nouns (no article needed) ---- */
+const UNCOUNTABLE = new Set([
+  'advice','information','news','knowledge','music','love','happiness',
+  'money','water','coffee','tea','milk','bread','butter','cheese',
+  'flour','sugar','salt','rice','air','weather','traffic','pollution',
+  'equipment','furniture','luggage','baggage','accommodation','software',
+  'hardware','electricity','gas','oil','blood','hair','grass','sand',
+  'wood','iron','gold','silver','copper','cotton','wool','leather',
+  'evidence','proof','homework','work','fun','luck','progress',
+  'research','travel','trouble','behaviour','behavior','education',
+  'experience','health','justice','peace','violence','time','space',
+  'nature','science','technology','history','philosophy','democracy',
+  'freedom','independence','confidence','patience','courage','kindness',
+  'darkness','light','heat','cold','faith','hope','food','fire',
+  'smoke','dust','mud','snow','rain','fog','ice','steam','glass',
+  'plastic','metal','stone','paint','energy','power','strength',
+  'beauty','truth','wisdom','art','music','poetry','literature',
+  'mathematics','physics','chemistry','biology','geography'
+]);
+
+/* ---- Vowel-sound test for a/an ---- */
+const VOWEL_SOUNDS = /^(a|e|i|o|u|8|11|18|80|honest|honor|hour)/i;
+const CONSONANT_SOUNDS = /^(uni|use|eu|one|u[st])/i; // "a university", "a one-sided"
+
+function getArticle(word){
+  if(CONSONANT_SOUNDS.test(word)) return 'a';
+  if(VOWEL_SOUNDS.test(word)) return 'an';
+  return 'a';
+}
+
+/* ---- Modal & auxiliary verbs (skip SVA for these) ---- */
+const MODALS = new Set([
+  'can','could','will','would','shall','should','may','might','must',
+  'need','dare','ought','used','let','help','make','have','had',
+  'been','being','am','is','are','was','were','do','did','does',
+  'going','went','come','came','get','got','seem','seems','became',
+  'become','keep','kept','start','started','stop','stopped'
+]);
+
+/* ---- 3rd-person present: irregular forms ---- */
+const THIRD_PS_MAP = {
+  be:'is', have:'has', do:'does', go:'goes', say:'says',
+  try:'tries', fly:'flies', carry:'carries', study:'studies',
+  worry:'worries', copy:'copies', deny:'denies', rely:'relies',
+  cry:'cries', dry:'dries', fry:'fries', spy:'spies',
+  apply:'applies', supply:'supplies', reply:'replies',
+  verify:'verifies', justify:'justifies', satisfy:'satisfies',
+  occupy:'occupies', identify:'identifies', accompany:'accompanies',
+  watch:'watches', catch:'catches', reach:'reaches', teach:'teaches',
+  preach:'preaches', attach:'attaches', match:'matches',
+  push:'pushes', rush:'rushes', wash:'washes', wish:'wishes',
+  finish:'finishes', polish:'polishes', publish:'publishes',
+  mix:'mixes', fix:'fixes', box:'boxes', relax:'relaxes',
+  buzz:'buzzes', fizz:'fizzes', pass:'passes', miss:'misses',
+  dress:'dresses', press:'presses', kiss:'kisses', toss:'tosses',
+  cross:'crosses', discuss:'discusses', guess:'guesses',
+  address:'addresses', assess:'assesses', confess:'confesses'
+};
+
+function getThirdPerson(verb){
+  const v = verb.toLowerCase();
+  if(THIRD_PS_MAP[v]) return THIRD_PS_MAP[v];
+  // Regular: verb ends in consonant+y → ies
+  if(/[^aeiou]y$/.test(v)) return v.slice(0,-1)+'ies';
+  // Ends in ch/sh/x/ss/zz → es
+  if(/(ch|sh|x|ss|zz|o)$/.test(v)) return v+'es';
+  return v+'s';
+}
+
+/* ---- compromise.js supplementary check engine ---- */
+function runCompromiseChecks(text, ltErrors){
+  if(typeof nlp === 'undefined') return [];
+  const errors = [];
+  let idC = 9000;
+
+  // Helper: does an LT error already cover this span?
+  function ltCovers(start, end){
+    return ltErrors.some(e => Math.max(e.start, start) < Math.min(e.end, end));
+  }
+
+  // ================================================================
+  // CHECK A — Wrong irregular verb forms  (dictionary-based)
+  // ================================================================
+  try {
+    const wrongKeys = Object.keys(WRONG_IRREGULARS);
+    const irreg_rx = new RegExp('\\b(' + wrongKeys.join('|') + ')\\b', 'gi');
+    let m;
+    while((m = irreg_rx.exec(text)) !== null){
+      const start = m.index, original = m[0], end = start + original.length;
+      const correct = WRONG_IRREGULARS[original.toLowerCase()];
+      if(!correct || ltCovers(start, end)) continue;
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Wrong Tense',
+        start, end, original,
+        suggestion: matchCase(original, correct),
+        message: `"${original}" is not a valid past-tense form. Use "${correct}" instead.`
+      });
+    }
+  } catch(e){ console.warn('[CP irregular]', e); }
+
+  // ================================================================
+  // CHECK B — Subject-Verb Agreement
+  // ================================================================
+  try {
+    const doc = nlp(text);
+
+    // B1: he/she/it + base-form verb  →  should be 3rd person present
+    const sing3_rx = /\b(he|she|it)\s+([a-z]{2,})\b/gi;
+    let s3m;
+    while((s3m = sing3_rx.exec(text)) !== null){
+      const pronoun = s3m[1].toLowerCase();
+      const verbRaw = s3m[2];
+      const verb    = verbRaw.toLowerCase();
+
+      if(MODALS.has(verb)) continue;
+      if(verb.endsWith('ing')) continue;       // gerund / continuous → skip
+      if(verb.endsWith('ed')) continue;        // past tense → skip (handled elsewhere)
+      if(verb.endsWith('en')) continue;        // past participle → skip
+
+      // Use compromise to get the infinitive/base form of this word
+      const vDoc = nlp(verbRaw);
+      const conj = vDoc.verbs().conjugate()?.[0];
+      if(!conj) continue;
+      const infinitive = (conj.Infinitive || '').toLowerCase();
+      if(!infinitive) continue;
+
+      // Compute what 3rd-person present should look like
+      const expected3ps = getThirdPerson(infinitive);
+
+      // If verb already IS the correct 3rd-person form → no error, skip
+      if(expected3ps === verb) continue;
+
+      // Only flag if the verb is currently in base/infinitive form
+      // (i.e. the user wrote the bare infinitive after he/she/it)
+      if(infinitive !== verb) continue;
+
+      const verbStart = s3m.index + s3m[1].length + 1; // +1 for space
+      const verbEnd   = verbStart + verbRaw.length;
+      if(ltCovers(verbStart, verbEnd)) continue;
+
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Subject-Verb Agreement',
+        start: verbStart, end: verbEnd, original: verbRaw,
+        suggestion: matchCase(verbRaw, expected3ps),
+        message: `After "${pronoun}", the verb needs the 3rd-person singular form. Use "${expected3ps}" instead of "${verbRaw}".`
+      });
+    }
+
+    // B2: I/we/you/they + 3rd-person-s verb  →  should be base form
+    // Words that legitimately end in 's' as base forms (not 3rd-person)
+    const BASE_FORM_S_ENDINGS = new Set([
+      'discuss','process','focus','access','miss','kiss','stress','dress',
+      'press','guess','assess','confess','address','express','impress',
+      'compass','class','grass','mass','pass','bass','boss','cross',
+      'loss','moss','toss','gloss','floss','truss','fuss','bus',
+      'plus','thus','campus','virus','census','bonus','chorus','exodus',
+      'status','nexus','locus','focus','cactus','fungus','genius','radius'
+    ]);
+    const plur_rx = /\b(i|we|you|they)\s+([a-z]{2,}s)\b/gi;
+    let pm;
+    while((pm = plur_rx.exec(text)) !== null){
+      const pronoun = pm[1].toLowerCase();
+      const verbRaw = pm[2];
+      const verb    = verbRaw.toLowerCase();
+
+      if(MODALS.has(verb)) continue;
+      if(verb.endsWith('ing') || verb.endsWith('ed')) continue;
+      // Skip known base-form words that end in 's' (nouns or base verbs)
+      if(BASE_FORM_S_ENDINGS.has(verb)) continue;
+
+      // Use compromise to get the base form
+      const vDoc = nlp(verbRaw);
+      const conj = vDoc.verbs().conjugate()?.[0];
+      if(!conj) continue;
+      const base = conj.Infinitive;
+      if(!base || base.toLowerCase() === verb) continue;
+      // Sanity: base must differ from verbRaw by removing -s/-es/-ies
+      const diff = verb.length - base.length;
+      if(diff < 1 || diff > 3) continue;
+
+      const verbStart = pm.index + pm[1].length + 1;
+      const verbEnd   = verbStart + verbRaw.length;
+      if(ltCovers(verbStart, verbEnd)) continue;
+
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Subject-Verb Agreement',
+        start: verbStart, end: verbEnd, original: verbRaw,
+        suggestion: matchCase(verbRaw, base),
+        message: `After "${pronoun}", use the base form "${base}" — not the 3rd-person form "${verbRaw}".`
+      });
+    }
+
+    // B3: Det/possessive + singular common noun + base-form verb
+    // Catches "My friend go" → "goes", "The cat run" → "runs"
+    // B1/B2 only check pronouns; B3 covers real noun subjects.
+    const b3_rx = /\b(the|a|an|my|your|his|her|its|our|their|this|that|each|every)\s+([a-z]{2,})\s+([a-z]{2,})\b/gi;
+    let b3m;
+    while((b3m = b3_rx.exec(text)) !== null){
+      const nounRaw = b3m[2];
+      const verbRaw = b3m[3];
+      const noun    = nounRaw.toLowerCase();
+      const verb    = verbRaw.toLowerCase();
+
+      if(MODALS.has(verb)) continue;
+      if(verb.endsWith('ing') || verb.endsWith('ed') || verb.endsWith('en')) continue;
+      if(UNCOUNTABLE.has(noun)) continue;
+
+      // Verify middle word is a singular common noun via compromise
+      const nDocB3  = nlp(nounRaw);
+      const nTagsB3 = new Set(nDocB3.terms().json()?.[0]?.tags || []);
+      if(!nTagsB3.has('Noun') || nTagsB3.has('Plural') || nTagsB3.has('ProperNoun') || nTagsB3.has('Pronoun')) continue;
+
+      // Verify last word is a verb in base/infinitive form via compromise
+      const vDocB3  = nlp(verbRaw);
+      const vConjB3 = vDocB3.verbs().conjugate()?.[0];
+      if(!vConjB3) continue;
+      const infB3 = (vConjB3.Infinitive || '').toLowerCase();
+      if(!infB3 || infB3 !== verb) continue;   // not base form → skip
+
+      const exp3ps = getThirdPerson(infB3);
+      if(exp3ps === verb) continue;             // already correct 3rd person → skip
+
+      // verbRaw is always the last word in b3m[0]
+      const verbStart = b3m.index + b3m[0].length - verbRaw.length;
+      const verbEnd   = verbStart + verbRaw.length;
+      if(ltCovers(verbStart, verbEnd)) continue;
+
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Subject-Verb Agreement',
+        start: verbStart, end: verbEnd, original: verbRaw,
+        suggestion: matchCase(verbRaw, exp3ps),
+        message: `"${nounRaw}" is a singular subject — use the 3rd-person form "${exp3ps}" instead of "${verbRaw}".`
+      });
+    }
+
+  } catch(e){ console.warn('[CP SVA]', e); }
+
+  // ================================================================
+  // CHECK C — Missing article before singular countable nouns
+  // ================================================================
+  try {
+    const doc = nlp(text);
+    const nouns = doc.nouns().json({ offset: true });
+
+    nouns.forEach(n => {
+      const nounText  = n.text;
+      const nounStart = n.offset?.start;
+      if(nounStart == null || nounStart === 0) return;
+
+      const nounLower = nounText.toLowerCase();
+      if(UNCOUNTABLE.has(nounLower)) return;
+
+      // Skip plurals and proper nouns
+      const tags = new Set(n.terms?.[0]?.tags || []);
+      if(tags.has('Plural') || tags.has('ProperNoun') || tags.has('Pronoun')) return;
+      if(/[A-Z]/.test(nounText[0]) && nounStart > 0) return; // likely proper noun
+
+      // Look back up to 30 chars for the previous token
+      const beforeText = text.slice(Math.max(0, nounStart - 30), nounStart);
+      const prevTokens = beforeText.trim().split(/\s+/);
+      const prevWord   = (prevTokens[prevTokens.length - 1] || '').toLowerCase()
+                          .replace(/[^a-z]/g, '');
+      if(!prevWord) return;
+      if(DETS.has(prevWord)) return;
+
+      // Skip if preceded by a possessive ('s) or a verb that takes bare NP
+      if(prevWord.endsWith("'s") || prevWord.endsWith("s'")) return;
+
+      // Skip very short nouns that are often not countable in context
+      if(nounText.length < 3) return;
+
+      // Skip if the char immediately before is a quote/paren/newline (likely start of clause)
+      const charBefore = text[nounStart - 1];
+      if(/[\n\r"'([]/.test(charBefore)) return;
+
+      // Don't flag if the preceding word is a number-adjective ("three cats" is fine)
+      if(/^\d+$/.test(prevWord)) return;
+
+      const nounEnd  = nounStart + nounText.length;
+      if(ltCovers(nounStart, nounEnd)) return;
+
+      const article = getArticle(nounText);
+
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Missing Article',
+        start: nounStart, end: nounEnd, original: nounText,
+        suggestion: article + ' ' + nounText,
+        message: `A singular countable noun may need an article. Consider adding "${article}" before "${nounText}".`
+      });
+    });
+
+    // C2: Preposition + bare singular noun — catches "go to gym" → "go to a gym"
+    // compromise's nouns() misses nouns inside prepositional phrases in many cases.
+    // Nouns that are idiomatic without an article after a preposition (go to school, at work, etc.)
+    const IDIOM_NO_ART = new Set([
+      'school','college','university','church','hospital','prison','jail','court',
+      'work','home','bed','class','sea','camp','office','market','nature',
+      'dawn','dusk','noon','midnight','sunrise','sunset','shore','shore'
+    ]);
+    const prep_noun_rx = /\b(to|at|in|on|into)\s+([a-z]{3,})\b/gi;
+    let pnm;
+    while((pnm = prep_noun_rx.exec(text)) !== null){
+      const nounRaw   = pnm[2];
+      const noun      = nounRaw.toLowerCase();
+      const nounStart = pnm.index + pnm[0].length - nounRaw.length;
+      const nounEnd   = nounStart + nounRaw.length;
+
+      if(DETS.has(noun)) continue;          // word itself is a determiner ("to the", "in this")
+      if(UNCOUNTABLE.has(noun)) continue;
+      if(IDIOM_NO_ART.has(noun)) continue;
+
+      if(ltCovers(nounStart, nounEnd)) continue;
+
+      // Verify it's a singular count noun via compromise
+      const nDocC2  = nlp(nounRaw);
+      const nTagsC2 = new Set(nDocC2.terms().json()?.[0]?.tags || []);
+      if(!nTagsC2.has('Noun') || nTagsC2.has('Plural') || nTagsC2.has('ProperNoun')) continue;
+
+      // Also skip if this span was already flagged by Check C above
+      const alreadyFlagged = errors.some(e => Math.max(e.start, nounStart) < Math.min(e.end, nounEnd));
+      if(alreadyFlagged) continue;
+
+      const article = getArticle(nounRaw);
+      errors.push({
+        id: 'cp'+(idC++), type:'grammar', category:'Missing Article',
+        start: nounStart, end: nounEnd, original: nounRaw,
+        suggestion: article + ' ' + nounRaw,
+        message: `A singular countable noun after a preposition usually needs an article. Consider adding "${article}" before "${nounRaw}".`
+      });
+    }
+
+  } catch(e){ console.warn('[CP article]', e); }
+
+  // ================================================================
+  // CHECK D — Verb tense inconsistency within a sentence
+  // ================================================================
+  try {
+    const doc = nlp(text);
+
+    doc.sentences().forEach(sent => {
+      const sentJson = sent.json({ offset: true })?.[0];
+      if(!sentJson) return;
+
+      const verbs = sent.verbs().json({ offset: true });
+      if(verbs.length < 2) return;
+
+      const pastVerbs    = [];
+      const presentVerbs = [];
+
+      verbs.forEach(v => {
+        const vTags = new Set(v.terms?.[0]?.tags || v.tags || []);
+        const vStart = v.offset?.start;
+        if(vStart == null) return;
+
+        // Exclude modals / auxiliaries from tense check
+        const vText = v.text.toLowerCase();
+        if(MODALS.has(vText)) return;
+        if(v.text.endsWith('ing')) return;  // gerund / progressive → skip
+
+        if(vTags.has('PastTense')) pastVerbs.push({ text:v.text, start: vStart, end: vStart + v.text.length });
+        else if(vTags.has('PresentTense') || vTags.has('Infinitive')) presentVerbs.push({ text:v.text, start: vStart, end: vStart + v.text.length });
+      });
+
+      // Only flag if both tenses present AND one clearly dominates
+      if(pastVerbs.length === 0 || presentVerbs.length === 0) return;
+
+      const minority = pastVerbs.length < presentVerbs.length ? pastVerbs : presentVerbs;
+      const majorTense = presentVerbs.length >= pastVerbs.length ? 'present' : 'past';
+
+      minority.forEach(v => {
+        if(ltCovers(v.start, v.end)) return;
+
+        errors.push({
+          id: 'cp'+(idC++), type:'grammar', category:'Verb Tense Inconsistency',
+          start: v.start, end: v.end, original: v.text,
+          suggestion: null,   // tense correction requires context; user must review
+          message: `Tense shift detected: the rest of this sentence uses ${majorTense} tense, but "${v.text}" appears to be in a different tense. Review for consistency.`
+        });
+      });
+    });
+
+  } catch(e){ console.warn('[CP tense]', e); }
+
+  return errors;
+}
+
+/* =====================================================================
+   STATE & DOM
+   ===================================================================== */
+let currentErrors=[], currentText='';
+
+const textInput   = document.getElementById('textInput');
+const taBackdrop  = document.getElementById('taBackdrop');
+const checkBtn    = document.getElementById('checkBtn');
+const clearBtn    = document.getElementById('clearBtn');
+const fixAllBtn   = document.getElementById('fixAllBtn');
+const copyBtn     = document.getElementById('copyBtn');
+const statusEl    = document.getElementById('statusMsg');
+const wordCountEl = document.getElementById('wordCount');
+const charCountEl = document.getElementById('charCount');
+const libBadgeEl  = document.getElementById('libBadge');
+const outputEmpty = document.getElementById('outputEmpty');
+const outputBox   = document.getElementById('outputBox');
+const errListEl   = document.getElementById('errList');
+const errBadgeEl  = document.getElementById('errBadge');
+
+/* =====================================================================
+   INIT — mark engines ready
+   ===================================================================== */
+function setBadge(html,cls){libBadgeEl.className='lib-badge '+cls;libBadgeEl.innerHTML=html;}
+
+function initLibs(){
+  const cpReady = typeof nlp !== 'undefined';
+  if(cpReady){
+    setBadge('⚡ LanguageTool + compromise · Ready','lb-ready');
+  } else if(window._compromiseFailed){
+    setBadge('⚡ LanguageTool only (compromise unavailable)','lb-partial');
+  } else {
+    setBadge('⚡ LanguageTool · Ready (compromise loading…)','lb-partial');
+    // Poll up to 6 seconds for compromise to finish loading from CDN
+    let retries = 0;
+    const poll = setInterval(()=>{
+      retries++;
+      if(typeof nlp !== 'undefined'){
+        clearInterval(poll);
+        setBadge('⚡ LanguageTool + compromise · Ready','lb-ready');
+      } else if(window._compromiseFailed || retries > 60){
+        clearInterval(poll);
+        setBadge('⚡ LanguageTool only (compromise unavailable)','lb-partial');
+      }
+    }, 100);
+  }
+  checkBtn.disabled=false;
+}
+initLibs();
+
+/* =====================================================================
+   COUNTER & SCROLL SYNC
+   ===================================================================== */
+function updateCounter(){
+  const v=textInput.value;
+  charCountEl.textContent=v.length+' chars';
+  const w=v.trim()?v.trim().split(/\s+/).length:0;
+  wordCountEl.textContent=w+' words';
+}
+function syncScroll(){taBackdrop.scrollTop=textInput.scrollTop;taBackdrop.scrollLeft=textInput.scrollLeft;}
+textInput.addEventListener('input',()=>{updateCounter();clearBackdrop();});
+textInput.addEventListener('scroll',syncScroll);
+
+/* =====================================================================
+   STATUS
+   ===================================================================== */
+function setStatus(msg,cls){statusEl.textContent=msg;statusEl.className='status-msg'+(cls?' '+cls:'');}
+
+/* =====================================================================
+   BACKDROP HIGHLIGHT
+   ===================================================================== */
+function clearBackdrop(){taBackdrop.innerHTML='';}
+
+function paintBackdrop(text,errors){
+  if(!errors.length){clearBackdrop();return;}
+  let html='',pos=0;
+  for(const e of errors){
+    if(e.start>pos) html+=esc(text.slice(pos,e.start));
+    const cls=e.type==='grammar'?'mg':'ms';
+    html+=`<mark class="${cls}" title="${esc(e.message)}">${esc(text.slice(e.start,e.end))}</mark>`;
+    pos=e.end;
+  }
+  if(pos<text.length) html+=esc(text.slice(pos));
+  taBackdrop.innerHTML=html.replace(/\n/g,'<br>');
+  syncScroll();
+}
+
+/* =====================================================================
+   MAIN CHECK — LanguageTool (primary) + compromise.js (supplementary)
+   ===================================================================== */
+async function runCheck(){
+  const text=textInput.value;
+  if(!text.trim()){setStatus('Please enter some text first.','swarn');return;}
+
+  checkBtn.disabled=true;
+  checkBtn.innerHTML='<span class="spin"></span>&nbsp;Checking…';
+  setStatus('Checking with LanguageTool + compromise.js…','sinfo');
+  clearBackdrop();
+  appliedFixes.clear();
+
+  try{
+    // ---- Primary: LanguageTool API ----
+    const matches = await runLanguageTool(text);
+
+    const ltErrors = matches
+      .filter(m => m.length > 0 && m.offset >= 0 && m.offset + m.length <= text.length)
+      .map((m, i) => {
+        const original   = text.slice(m.offset, m.offset + m.length);
+        const suggestion = m.replacements?.length ? m.replacements[0].value : null;
+        return {
+          id: 'lt'+i, type: ltType(m), category: ltCategory(m),
+          start: m.offset, end: m.offset + m.length,
+          original, suggestion,
+          message: m.message || 'Grammar issue'
+        };
+      });
+
+    // ---- Supplementary: compromise.js ----
+    const cpErrors = runCompromiseChecks(text, ltErrors);
+
+    // ---- Merge, deduplicate (LT wins on overlapping spans), sort ----
+    const allErrors = [...ltErrors, ...cpErrors]
+      .filter((err, idx, arr) => {
+        // Remove duplicate spans: keep first occurrence (LT first)
+        return !arr.slice(0, idx).some(e =>
+          Math.max(e.start, err.start) < Math.min(e.end, err.end)
+        );
+      })
+      .sort((a,b) => a.start - b.start);
+
+    currentErrors = allErrors;
+    currentText   = text;
+
+    paintBackdrop(text, allErrors);
+    renderErrors();
+
+    const n  = allErrors.length;
+    const lt = ltErrors.length;
+    const cp = cpErrors.filter(e => allErrors.includes(e)).length;
+
+    if(n===0){
+      setStatus('✓ No issues found — great writing!','ssuccess');
+    } else {
+      const g = allErrors.filter(e=>e.type==='grammar').length;
+      const s = allErrors.filter(e=>e.type==='spelling').length;
+      const parts=[]; if(g)parts.push(g+' grammar'); if(s)parts.push(s+' spelling');
+      const src = lt&&cp ? ` · LT:${lt} CP:${cp}` : '';
+      setStatus(`Found ${n} issue${n!==1?'s':''} (${parts.join(', ')})${src}.`,'swarn');
+    }
+  } catch(err){
+    console.error('[Grammar Check]', err);
+    setStatus('Error contacting LanguageTool. Check your connection and try again.','serror');
+  }
+
+  checkBtn.disabled=false;
+  checkBtn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Check Grammar &amp; Spelling';
+}
+
+/* =====================================================================
+   RENDER ERRORS LIST
+   ===================================================================== */
+function renderErrors(){
+  const total=currentErrors.length;
+  const fixable=currentErrors.filter(e=>e.suggestion).length;
+  errBadgeEl.textContent=total||'';
+  fixAllBtn.disabled=fixable===0;
+
+  if(!total){
+    errListEl.innerHTML=`<div class="empty-err">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span><strong>No issues found.</strong> Your text looks great!</span></div>`;
+    return;
+  }
+
+  const grid=document.createElement('div');
+  grid.className='ec-grid';
+  currentErrors.forEach(err=>{
+    const card=document.createElement('div');
+    card.id='ec-'+err.id;
+    card.className='ecard '+(err.type==='grammar'?'eg':'es');
+    card.innerHTML=`
+      <div class="ec-top">
+        <span class="ebadge ${err.type==='grammar'?'g':'s'}">${err.type==='grammar'?'✦ Grammar':'~ Spelling'}</span>
+        ${err.suggestion?`<button class="btn-fix-ec" onclick="fixOne('${err.id}')">Fix</button>`:''}
+      </div>
+      ${err.category?`<div class="ec-cat">${esc(err.category)}</div>`:''}
+      <div class="ec-words">
+        <span class="worig">${esc(err.original)}</span>
+        ${err.suggestion?`<span class="warr">→</span><span class="wsugg">${esc(err.suggestion)}</span>`:''}
+      </div>
+      <p class="ec-msg">${esc(err.message)}</p>`;
+    grid.appendChild(card);
+  });
+  errListEl.innerHTML='';
+  errListEl.appendChild(grid);
+}
+
+/* =====================================================================
+   SHOW OUTPUT BOX
+   ===================================================================== */
+function showOutput(text){
+  outputEmpty.style.display='none';
+  outputBox.classList.add('show');
+  outputBox.value=text;
+  copyBtn.disabled=false;
+}
+
+/* =====================================================================
+   APPLIED FIXES TRACKER — keeps positions correct across multiple fixOne calls
+   ===================================================================== */
+const appliedFixes=new Set();
+
+/* =====================================================================
+   FIX ONE — applies a single fix and shows result in output box
+   ===================================================================== */
+function fixOne(id){
+  const err=currentErrors.find(e=>e.id===id);
+  if(!err?.suggestion)return;
+
+  appliedFixes.add(id);
+
+  // Re-apply ALL accumulated fixes back-to-front on currentText (keeps positions valid)
+  const fixable=[...currentErrors]
+    .filter(e=>appliedFixes.has(e.id)&&e.suggestion)
+    .sort((a,b)=>b.start-a.start);
+  let text=currentText;
+  for(const e of fixable) text=text.slice(0,e.start)+matchCase(e.original,e.suggestion)+text.slice(e.end);
+
+  showOutput(text);
+
+  // Mark card as fixed visually
+  const card=document.getElementById('ec-'+id);
+  if(card){
+    card.classList.add('fixed');
+    const fixBtn=card.querySelector('.btn-fix-ec');
+    if(fixBtn) fixBtn.remove();
+    const badge=card.querySelector('.ebadge');
+    if(badge){badge.className='ebadge ok';badge.textContent='✓ Fixed';}
+  }
+}
+
+/* =====================================================================
+   FIX ALL — applies all fixable errors back-to-front
+   ===================================================================== */
+fixAllBtn.addEventListener('click',()=>{
+  if(!currentErrors.length)return;
+  const fixable=[...currentErrors].filter(e=>e.suggestion).sort((a,b)=>b.start-a.start);
+  let text=currentText;
+  for(const e of fixable) text=text.slice(0,e.start)+matchCase(e.original,e.suggestion)+text.slice(e.end);
+  showOutput(text);
+  document.querySelectorAll('.btn-fix-ec').forEach(b=>b.remove());
+  document.querySelectorAll('.ecard').forEach(c=>{
+    c.classList.add('fixed');
+    const b=c.querySelector('.ebadge');
+    if(b){b.className='ebadge ok';b.textContent='✓ Fixed';}
+  });
+  setStatus('All fixes applied — corrected text shown in the right box.','ssuccess');
+});
+
+/* =====================================================================
+   COPY
+   ===================================================================== */
+copyBtn.addEventListener('click',()=>{
+  navigator.clipboard.writeText(outputBox.value).then(()=>{
+    const orig=copyBtn.innerHTML;
+    copyBtn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    setTimeout(()=>{copyBtn.innerHTML=orig;},1800);
+  }).catch(()=>{outputBox.select();document.execCommand('copy');});
+});
+
+/* =====================================================================
+   CHECK BUTTON & KEYBOARD
+   ===================================================================== */
+checkBtn.addEventListener('click',runCheck);
+textInput.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();if(!checkBtn.disabled)runCheck();}
+});
+
+/* =====================================================================
+   CLEAR
+   ===================================================================== */
+clearBtn.addEventListener('click',()=>{
+  textInput.value=''; updateCounter(); clearBackdrop();
+  currentErrors=[]; currentText=''; appliedFixes.clear();
+  errBadgeEl.textContent=''; fixAllBtn.disabled=true; copyBtn.disabled=true;
+  outputEmpty.style.display=''; outputBox.classList.remove('show'); outputBox.value='';
+  setStatus('','');
+  errListEl.innerHTML=`<div class="empty-err">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <span>Click <strong>Check Grammar &amp; Spelling</strong> above to analyse your text.</span></div>`;
+});
+
+/* =====================================================================
+   CONTACT FORM
+   ===================================================================== */
+document.getElementById('cForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const btn=document.getElementById('cf-submit'),errEl=document.getElementById('cf-err');
+  errEl.textContent=''; btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span>&nbsp;Sending…';
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{
+      method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(Object.fromEntries(new FormData(this)))
+    });
+    const j=await res.json();
+    if(j.success){
+      this.style.display='none';
+      document.getElementById('cf-ok').classList.add('show');
+    }else{
+      errEl.textContent=j.message||'Something went wrong. Please try again.';
+      btn.disabled=false;
+      btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message';
+    }
+  }catch(_){
+    errEl.textContent='Network error. Please check your connection.';
+    btn.disabled=false;
+    btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message';
+  }
+});
+</script>
+</body>
+</html>
