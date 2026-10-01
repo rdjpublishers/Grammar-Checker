@@ -34,7 +34,6 @@
     Free public API — no key required. Rate limited to fair use.
   -->
   <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8728382905346597" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
@@ -888,8 +887,14 @@ async function runLanguageTool(text, language='en-US'){
     headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
     body
   });
-  if(!res.ok) throw new Error('LanguageTool HTTP '+res.status);
-  const data = await res.json();
+  if(!res.ok){
+    if(res.status===429) throw new Error('RATE_LIMIT');
+    if(res.status>=500) throw new Error('SERVER_DOWN');
+    throw new Error('HTTP_'+res.status);
+  }
+  let data;
+  try{ data=await res.json(); }catch(_){ throw new Error('BAD_RESPONSE'); }
+  if(!data || typeof data!=='object') throw new Error('BAD_RESPONSE');
   return data.matches || [];
 }
 
@@ -1484,7 +1489,17 @@ async function runCheck(){
     }
   } catch(err){
     console.error('[Grammar Check]', err);
-    setStatus('Error contacting LanguageTool. Check your connection and try again.','serror');
+    const code = (err && err.message) || '';
+    let msg = 'Could not reach the grammar service. Check your connection and try again.';
+    if(code==='RATE_LIMIT') msg = 'The grammar service is rate-limiting requests right now (free public API limit). Please wait a few seconds and try again.';
+    else if(code==='SERVER_DOWN') msg = 'The grammar service is temporarily unavailable. Please try again in a moment.';
+    else if(code==='BAD_RESPONSE') msg = 'The grammar service returned an unexpected response. Please try again.';
+    setStatus(msg,'serror');
+    // Inject a "Retry" action next to the status message
+    statusEl.innerHTML = statusEl.innerHTML +
+      ' <a href="#" id="lt-retry" style="color:#991b1b;text-decoration:underline;font-weight:600;margin-left:.4rem;">Retry</a>';
+    const retryEl = document.getElementById('lt-retry');
+    if(retryEl){ retryEl.onclick = (e)=>{ e.preventDefault(); runCheck(); }; }
   }
 
   checkBtn.disabled=false;
